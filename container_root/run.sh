@@ -44,6 +44,6 @@ if [ $? -eq 1 ]; then
 fi
 
 echo "Starting Oozie"
-/opt/oozie/bin/oozied.sh start
+su -l -c "/opt/oozie/bin/oozied.sh start" oozie
 
 sleep infinity
