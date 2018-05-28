@@ -17,14 +17,14 @@ RUN apt-get update && \
 # Installation Oozie
 
 # == Either crteate oozie dist (downloads the internet):
-# RUN appt-get install default-jdk maven && \
+# RUN apt-get install -y default-jdk maven && \
 #     cd /tmp && \
 #     wget http://www-eu.apache.org/dist/oozie/4.3.1/oozie-4.3.1.tar.gz && \
-#     tar -zxvf /tmp/oozie-4.3.1.tar.gz && \
-#     cd /tmp/oozie-4.3.1.tar.gz && \
-#     bin/mkdistro.sh -DskipTests -Puber -Dhadoop.version=2.8.4 && \
-#     cp /opt/oozie/distro/target/oozie-4.3.1-distro.tar.gz /tmp
-
+#     tar -zxvf /tmp/oozie-4.3.1.tar.gz
+# RUN cd /tmp/oozie-4.3.1 && \
+#     bin/mkdistro.sh -DskipTests -Puber -Dhadoop.version=2.8.4
+# RUN cp /tmp/oozie-4.3.1/distro/target/oozie-4.3.1-distro.tar.gz /tmp
+ 
 # == Or use a formerly created oozie dist:
 COPY oozie-4.3.1-distro.tar.gz /tmp
 
