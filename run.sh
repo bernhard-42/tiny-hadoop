@@ -2,8 +2,8 @@ source ./config.sh
 docker run -d \
        --hostname local-hadoop \
        --name local-hadoop \
-       -v /tmp/hadoop:/hadoop \
-       -v /tmp/hadoop/:/opt/oozie-4.3.1/data/ \
+       -v /opt/hadoop-docker-fs:/hadoop \
+       -v /opt/hadoop-docker-fs:/opt/oozie-4.3.1/data/ \
        -p 8020:8020 \
        -p 8032:8032 \
        -p 8042:8042 \
