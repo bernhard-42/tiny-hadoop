@@ -1,7 +1,8 @@
 source ./config.sh
+
 docker run -d \
-       --hostname local-hadoop \
-       --name local-hadoop \
+       --hostname tiny-hadoop \
+       --name tiny-hadoop \
        -v /opt/hadoop-docker-fs:/hadoop \
        -v /opt/hadoop-docker-fs:/opt/oozie-4.3.1/data/ \
        -p 8020:8020 \
@@ -15,7 +16,7 @@ docker run -d \
        -p 50020:50020 \
        -p 50075:50075 \
        -p 50090:50090 \
-       hadoop:$TAG \
+       tiny-hadoop:$TAG \
        /run.sh
 
-docker logs -f local-hadoop
+docker logs -f tiny-hadoop

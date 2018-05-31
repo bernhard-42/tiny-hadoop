@@ -1,45 +1,50 @@
-FROM ubuntu:16.04
+#
+# Stage 1: Building Oozie
+#
 
-# Installation Hadoop and Spark
-RUN apt-get update && \
-    apt-get install -y default-jre wget vim-tiny less openssh-client openssh-server net-tools python zip unzip && \
+FROM tiny-hadoop-base:latest
+
+ARG HADOOP_VERSION
+ARG OOZIE_VERSION
+
+RUN apt-get install -y default-jdk maven && \
     cd /tmp && \
-    wget http://www-eu.apache.org/dist/hadoop/common/hadoop-2.8.4/hadoop-2.8.4.tar.gz && \
-    wget http://www-eu.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-without-hadoop.tgz && \
-    cd /opt && \
-    tar -zxvf /tmp/hadoop-2.8.4.tar.gz && \
-    rm -fr /opt/hadoop-2.8.4/share/doc/ && \
-    ln -s hadoop-2.8.4 hadoop && \
-    tar -zxvf /tmp/spark-2.3.0-bin-without-hadoop.tgz && \
-    ln -s spark-2.3.0-bin-without-hadoop spark && \
-    rm /tmp/*.tar.gz
+    wget http://www-eu.apache.org/dist/oozie/${OOZIE_VERSION}/oozie-${OOZIE_VERSION}.tar.gz && \
+    tar -zxvf /tmp/oozie-${OOZIE_VERSION}.tar.gz
+RUN cd /tmp/oozie-${OOZIE_VERSION} && \
+    bin/mkdistro.sh -DskipTests -Puber -Dhadoop.version=${HADOOP_VERSION}
+RUN cp /tmp/oozie-${OOZIE_VERSION}/distro/target/oozie-${OOZIE_VERSION}-distro.tar.gz /tmp
 
-# Installation Oozie
+# RUN mkdir /tmp/oozie-dostro/ && \
+#     cp /tmp/oozie-${OOZIE_VERSION}/distro/target/oozie-${OOZIE_VERSION}-distro.tar.gz /tmp/distro
 
-# == Either crteate oozie dist (downloads the internet):
-# RUN apt-get install -y default-jdk maven && \
-#     cd /tmp && \
-#     wget http://www-eu.apache.org/dist/oozie/4.3.1/oozie-4.3.1.tar.gz && \
-#     tar -zxvf /tmp/oozie-4.3.1.tar.gz
-# RUN cd /tmp/oozie-4.3.1 && \
-#     bin/mkdistro.sh -DskipTests -Puber -Dhadoop.version=2.8.4
-# RUN cp /tmp/oozie-4.3.1/distro/target/oozie-4.3.1-distro.tar.gz /tmp
- 
-# == Or use a formerly created oozie dist:
-COPY oozie-4.3.1-distro.tar.gz /tmp
+# # == Or use a formerly created oozie dist:
+# COPY oozie-${OOZIE_VERSION}-distro.tar.gz /tmp
+
+
+#
+# Stage 2: Installing Oozie
+#
+
+FROM tiny-hadoop-base:latest
+
+ARG HADOOP_VERSION
+ARG OOZIE_VERSION
+
+COPY --from=0 /tmp/oozie-${OOZIE_VERSION}-distro.tar.gz /tmp
 
 RUN cd /opt && \
-    tar -zxvf /tmp/oozie-4.3.1-distro.tar.gz && \
-    ln -s /opt/oozie-4.3.1 /opt/oozie && \
+    tar -zxvf /tmp/oozie-${OOZIE_VERSION}-distro.tar.gz && \
+    ln -s /opt/oozie-${OOZIE_VERSION} /opt/oozie && \
     cd /opt/oozie && \
-    tar -zxvf oozie-client-4.3.1.tar.gz && \
-    mv oozie-client-4.3.1/lib/ . && \
-    mv oozie-client-4.3.1/conf/oozie-client-env.sh conf/ && \
-    rm -fr oozie-client-4.3.1.tar.gz docs.zip oozie-examples.tar.gz oozie-client-4.3.1/ && \
+    tar -zxvf oozie-client-${OOZIE_VERSION}.tar.gz && \
+    mv oozie-client-${OOZIE_VERSION}/lib/ . && \
+    mv oozie-client-${OOZIE_VERSION}/conf/oozie-client-env.sh conf/ && \
+    rm -fr oozie-client-${OOZIE_VERSION}.tar.gz docs.zip oozie-examples.tar.gz oozie-client-${OOZIE_VERSION}/ && \
     mkdir libext && \
     cp -n /opt/hadoop/share/hadoop/*/hadoop-*.jar \
           /opt/hadoop/share/hadoop/*/lib/*.jar \
-          oozie-core/oozie-core-4.3.1.jar \
+          oozie-core/oozie-core-${OOZIE_VERSION}.jar \
           libext && \
     wget http://central.maven.org/maven2/log4j/apache-log4j-extras/1.2.17/apache-log4j-extras-1.2.17.jar && \
     wget http://central.maven.org/maven2/org/apache/openjpa/openjpa-all/2.4.2/openjpa-all-2.4.2.jar && \

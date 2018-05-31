@@ -1,0 +1,19 @@
+FROM ubuntu:16.04
+
+ARG HADOOP_VERSION
+ARG SPARK_VERSION
+
+# Installation Hadoop and Spark
+RUN apt-get update && \
+    apt-get install -y default-jre wget vim-tiny less openssh-client openssh-server net-tools python zip unzip && \
+    cd /tmp && \
+    wget http://www-eu.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
+    wget http://www-eu.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-without-hadoop.tgz && \
+    cd /opt && \
+    tar -zxvf /tmp/hadoop-${HADOOP_VERSION}.tar.gz && \
+    rm -fr /opt/hadoop-${HADOOP_VERSION}/share/doc/ && \
+    ln -s hadoop-${HADOOP_VERSION} hadoop && \
+    tar -zxvf /tmp/spark-${SPARK_VERSION}-bin-without-hadoop.tgz && \
+    ln -s spark-${SPARK_VERSION}-bin-without-hadoop spark && \
+    rm /tmp/*.tar.gz
+
