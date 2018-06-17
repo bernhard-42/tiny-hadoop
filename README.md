@@ -1,6 +1,8 @@
-# 1 Image tiny-hadoop-base (Hadoop, Spark, HBase)
-A pseudo-distributed HDFS with YARN, Spark 2.3 and pseudo-distributed HBase 1.1 in a docker container usefull for testing clients that use WebHDFS, YARN and Oozie REST API.
+# A tiny hadoop stack
 
+## 1 Image tiny-hadoop-base (Hadoop, Spark, HBase)
+
+A pseudo-distributed HDFS with YARN, Spark 2.3 and pseudo-distributed HBase 1.1 in a docker container usefull for testing clients that use WebHDFS, YARN and Oozie REST API.
 
 - Build
 
@@ -18,8 +20,8 @@ A pseudo-distributed HDFS with YARN, Spark 2.3 and pseudo-distributed HBase 1.1 
 
     You may not want to start real jobs in it ;-)
 
+## 2 Image tiny-hadoop (Hadoop, Spark, HBase, Oozie)
 
-# 2 Image tiny-hadoop (Hadoop, Spark, HBase, Oozie)
 As `tiny-hadpoop-base`, however added Oozie for also testing Oozie REST API.
 
 - Build
@@ -27,7 +29,6 @@ As `tiny-hadpoop-base`, however added Oozie for also testing Oozie REST API.
     ```bash
     ./add-oozie.sh
     ```
-
 
 - Run
 
@@ -42,16 +43,15 @@ As `tiny-hadpoop-base`, however added Oozie for also testing Oozie REST API.
 **Note:** The first run of `add-oozie.sh` builds an Oozie binary in stage 1. It downloads the maven part of the Internet and takes very long ...
 If one only changes stage 2 in the Dockerfile, subsequent runs are pretty fast - as long as one doesn't remove the stage 1 interim image (maybe tag it after the first run).
 
-
-
-# 3 Simple REST API Tests
+## 3 Simple REST API Tests
 
 Wait until HBase is fully started (check via `localhost:16010`)
+
 ```bash
 ./test.sh
 ```
 
-# 4 Exposed Ports
+## 4 Exposed Ports
 
 8020 Namenode
 8032 Namenode IPC
@@ -70,7 +70,7 @@ Wait until HBase is fully started (check via `localhost:16010`)
 50075 Datanode Web UI
 50090 Secondary Namenode
 
-# 5 Infos
+### 5 Infos
 
 To get the memory footprint, wait until all services are started and then
 
