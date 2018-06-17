@@ -86,4 +86,8 @@ After this call root can also access Oozie:
 docker exec -it tiny-hadoop bash -l -c /opt/jvmtop/jvmtop.sh
 ```
 
+Show all hadoop service versions
+
+```bash
 docker exec -it tiny-hadoop cat /opt/hadoop-version.txt
+```
