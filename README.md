@@ -26,7 +26,7 @@ If one only changes stage 2 in the Dockerfile, subsequent runs are pretty fast -
 - You may not want to start real jobs in it ;-)
 
 
-## 3 Simple REST API Tests
+## 2 Simple REST API Tests
 
 Wait until HBase is fully started (check via `localhost:16010`)
 
@@ -34,7 +34,7 @@ Wait until HBase is fully started (check via `localhost:16010`)
 ./test.sh
 ```
 
-## 4 Exposed Ports
+## 3 Exposed Ports
 
 8020 Namenode
 8032 Namenode IPC
@@ -53,7 +53,7 @@ Wait until HBase is fully started (check via `localhost:16010`)
 50075 Datanode Web UI
 50090 Secondary Namenode
 
-### 5 Infos
+### 4 Infos
 
 To get the memory footprint, wait until all services are started and then
 
