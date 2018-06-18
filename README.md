@@ -53,7 +53,7 @@ Wait until HBase is fully started (check via `localhost:16010`)
 50075 Datanode Web UI
 50090 Secondary Namenode
 
-### 4 Infos
+## 4 Infos
 
 To get the memory footprint, wait until all services are started and then
 
