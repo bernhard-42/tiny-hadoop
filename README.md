@@ -1,33 +1,13 @@
 # A tiny hadoop stack
 
-## 1 Image tiny-hadoop-base (Hadoop, Spark, HBase)
+## 1 Build and Run
 
 A pseudo-distributed HDFS with YARN, Spark 2.3 and pseudo-distributed HBase 1.1 in a docker container usefull for testing clients that use WebHDFS, YARN and Oozie REST API.
 
 - Build
 
     ```bash
-    ./build-base.sh
-    ```
-
-- Run
-
-    ```bash
-    ./run-base.sh
-    ```
-
-    This will init the container and start HDFS, YARN, HBase in it.
-
-    You may not want to start real jobs in it ;-)
-
-## 2 Image tiny-hadoop (Hadoop, Spark, HBase, Oozie)
-
-As `tiny-hadpoop-base`, however added Oozie for also testing Oozie REST API.
-
-- Build
-
-    ```bash
-    ./add-oozie.sh
+    ./build.sh
     ```
 
 - Run
@@ -38,10 +18,13 @@ As `tiny-hadpoop-base`, however added Oozie for also testing Oozie REST API.
 
     This will init the container and start HDFS, YARN, HBase and Oozie in it.
 
-    Again, you may not want to start real jobs in it ;-)
 
-**Note:** The first run of `add-oozie.sh` builds an Oozie binary in stage 1. It downloads the maven part of the Internet and takes very long ...
+**Notes:**
+
+- The first run of `build.sh` builds an Oozie binary in stage 1. It downloads the maven part of the Internet and takes very long ...
 If one only changes stage 2 in the Dockerfile, subsequent runs are pretty fast - as long as one doesn't remove the stage 1 interim image (maybe tag it after the first run).
+- You may not want to start real jobs in it ;-)
+
 
 ## 3 Simple REST API Tests
 

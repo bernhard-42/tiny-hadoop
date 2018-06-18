@@ -43,17 +43,16 @@ su -l -c "/opt/hbase/bin/start-hbase.sh"
 
 echo "Done"
 
-if [ -d /opt/oozie/bin ]; then
-    /opt/hadoop/bin/hdfs dfs -ls /user/oozie/share/lib
-    if [ $? -eq 1 ]; then
-        echo "Preparing Oozie"
-        su -l -c "cd /opt/oozie && bin/oozie-setup.sh sharelib create -fs hdfs://localhost:8020  -locallib oozie-sharelib-4.3.1.tar.gz" oozie
-    fi
-
-    echo "Starting Oozie"
-    su -l -c "/opt/oozie/bin/oozied.sh start" oozie
-
-    echo "Done"
+/opt/hadoop/bin/hdfs dfs -ls /user/oozie/share/lib
+if [ $? -eq 1 ]; then
+    echo "Preparing Oozie"
+    su -l -c "cd /opt/oozie && bin/oozie-setup.sh sharelib create -fs hdfs://localhost:8020  -locallib oozie-sharelib-4.3.1.tar.gz" oozie
 fi
+
+
+echo "Starting Oozie"
+su -l -c "/opt/oozie/bin/oozied.sh start" oozie
+
+echo "Done"
 
 sleep infinity
