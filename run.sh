@@ -8,6 +8,7 @@ docker run -d \
        -v /opt/docker-fs/hadoop:/hadoop \
        -v /opt/docker-fs/hadoop:/opt/oozie-${OOZIE_VERSION}/data/ \
        -v /opt/docker-fs/hbase:/hbase \
+       -p 4040:4040 \
        -p 8020:8020 \
        -p 8032:8032 \
        -p 8042:8042 \

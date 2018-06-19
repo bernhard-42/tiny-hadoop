@@ -55,7 +55,7 @@ RUN apt-get update && \
     chmod a+x jvmtop.sh && \
     echo "=== CLEAN UP ===" && \
     chown -R root:root /opt && \
-    rm /tmp/*.tar.gz
+    rm /tmp/*.tar.gz /tmp/*.tgz
 
 # Installation of Oozie
 
@@ -64,6 +64,7 @@ COPY --from=0 /tmp/oozie-${OOZIE_VERSION}-distro.tar.gz /tmp
 RUN echo "=== OOZIE ===" && \
     cd /opt && \
     tar -zxvf /tmp/oozie-${OOZIE_VERSION}-distro.tar.gz && \
+    rm -f /tmp/oozie-${OOZIE_VERSION}-distro.tar.gz && \
     ln -s /opt/oozie-${OOZIE_VERSION} /opt/oozie && \
     cd /opt/oozie && \
     tar -zxvf oozie-client-${OOZIE_VERSION}.tar.gz && \
@@ -85,11 +86,24 @@ RUN echo "=== OOZIE ===" && \
     echo oozie-${OOZIE_VERSION} >> /opt/hadoop-version.txt
 
 # Configuration
-RUN ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
+RUN echo "=== CONFIGURATION ===" && \
+    ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && \
     chmod 0600 ~/.ssh/authorized_keys && \
     echo "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64" >> /etc/environment && \
-    echo "export SPARK_DIST_CLASSPATH=$(JAVA_HOME=/usr /opt/hadoop/bin/hadoop classpath)" > /opt/spark/conf/spark-env.sh && \
+    mkdir -p /var/run/hadoop /var/run/hbase /var/run/spark /var/run/oozie && \
+    sed -i 's:^export HADOOP_PID_DIR=.*:export HADOOP_PID_DIR=/var/run/hadoop:' /opt/hadoop/etc/hadoop/hadoop-env.sh && \
+    echo "YARN_PID_DIR=/var/run/hadoop" >> /opt/hadoop/libexec/yarn-config.sh && \
+    sed -i 's:^# export HBASE_PID_DIR=.*:export HBASE_PID_DIR=/var/run/hbase:' /opt/hbase/conf/hbase-env.sh && \
+    echo -e "\nexport CATALINA_PID=/var/run/oozie/oozie.pid" >> /opt/oozie/conf/oozie-env.sh && \
+    sed 's:^# - SPARK_PID_DIR.*:export SPARK_PID_DIR=/var/run/spark:' /opt/spark/conf/spark-env.sh.template > /opt/spark/conf/spark-env.sh && \
+    echo "export SPARK_DIST_CLASSPATH=$(JAVA_HOME=/usr /opt/hadoop/bin/hadoop classpath)" >> /opt/spark/conf/spark-env.sh && \
+    chown oozie:oozie /var/run/oozie && \
+    mkdir /etc/hadoop/ /etc/hbase/ /etc/spark/ /etc/oozie/ && \
+    ln -s /opt/hadoop/etc/hadoop /etc/hadoop/conf && \
+    ln -s /opt/hbase/conf /etc/hbase/conf && \
+    ln -s /opt/spark/conf /etc/spark/conf && \
+    ln -s /opt/oozie/conf /etc/oozie/conf && \
     echo hadoop-${HADOOP_VERSION} >> /opt/hadoop-version.txt && \
     echo spark-${SPARK_VERSION} >> /opt/hadoop-version.txt && \
     echo hbase-${HBASE_VERSION} >> /opt/hadoop-version.txt

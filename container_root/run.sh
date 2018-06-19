@@ -30,6 +30,10 @@ if [ $HDFS_EXISTS -eq 0 ]; then
     /opt/hadoop/bin/hdfs dfs -chown oozie:oozie /user/oozie
     /opt/hadoop/bin/hdfs dfs -chmod 755 /user
     /opt/hadoop/bin/hdfs dfs -chmod 755 /user/oozie
+
+    mkdir -p /hadoop/hdfs/namenode
+    mkdir -p /hadoop/hdfs/data
+    mkdir -p /hadoop/hdfs/namesecondary
 fi
 
 

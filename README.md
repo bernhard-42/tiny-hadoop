@@ -4,6 +4,8 @@
 
 A pseudo-distributed HDFS with YARN, Spark 2.3 and pseudo-distributed HBase 1.1 in a docker container usefull for testing clients that use WebHDFS, YARN and Oozie REST API.
 
+Note: Docker containers should have least 4G available (check restrictions)
+
 - Build
 
     ```bash
