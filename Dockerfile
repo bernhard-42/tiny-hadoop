@@ -1,17 +1,17 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 ARG HADOOP_VERSION
 ARG SPARK_VERSION
 
 # Install system libraries
 RUN apt-get update && \
-    apt-get install -y default-jdk wget vim-tiny less openssh-client openssh-server net-tools python sudo zip unzip
+    apt-get install -y openjdk-8-jdk wget vim-tiny less openssh-client openssh-server net-tools python sudo zip unzip
 
 # Create hdfs user
-RUN groupadd -g 1000 hdfs && \
+RUN groupadd -g 1000 hadoop && \
     useradd -g 1000 -u 1000 -r hdfs -d /home/hdfs && \
     mkdir /home/hdfs && \
-    chown hdfs:hdfs /home/hdfs && \
+    chown hdfs:hadoop /home/hdfs && \
     chmod 700 /home/hdfs
 
 USER hdfs
@@ -45,14 +45,14 @@ RUN cd /opt && \
     tar -zxvf hadoop-${HADOOP_VERSION}.tar.gz && \
     rm -fr hadoop-${HADOOP_VERSION}/share/doc/ && \
     mv hadoop-${HADOOP_VERSION} hadoop && \
-    chown -R hdfs:hdfs /opt/hadoop/ && \
+    chown -R hdfs:hadoop /opt/hadoop/ && \
     mkdir -p /var/run/hadoop/ && \
-    chown -R hdfs:hdfs /var/run/hadoop  && \
+    chown -R hdfs:hadoop /var/run/hadoop  && \
     echo hadoop-${HADOOP_VERSION} >> /opt/hadoop-version.txt && \
     rm *.tar.gz
 
 # Configuration
-RUN echo "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64" >> /etc/environment && \
+RUN echo "JAVA_HOME=/usr" >> /etc/environment && \
     mkdir -p /var/run/hadoop /var/run/spark && \
     sed -i 's:^export HADOOP_PID_DIR=.*:export HADOOP_PID_DIR=/var/run/hadoop:' /opt/hadoop/etc/hadoop/hadoop-env.sh && \
     sed 's:^# - SPARK_PID_DIR.*:export SPARK_PID_DIR=/var/run/spark:' /opt/spark/conf/spark-env.sh.template > /opt/spark/conf/spark-env.sh && \
@@ -64,6 +64,6 @@ RUN echo "JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64" >> /etc/environment &
 # Add files
 ADD container_root /
 
-RUN chown -R hdfs:hdfs /opt/hadoop
+RUN chown -R hdfs:hadoop /opt/hadoop
 
 CMD /run.sh

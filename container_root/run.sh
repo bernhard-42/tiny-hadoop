@@ -22,15 +22,13 @@ sudo -u hdfs /opt/hadoop/sbin/start-dfs.sh
 
 if [ $HDFS_EXISTS -eq 0 ]; then
     echo "Creating HDFS folder structure ..."
+    sudo -u hdfs kinit -k -t /etc/security/keytabs/hadoop.keytab hdfs/kerberos-hadoop@ACME.LOCALDOMAIN
     sudo -u hdfs /opt/hadoop/bin/hdfs dfs -mkdir /tmp
     sudo -u hdfs /opt/hadoop/bin/hdfs dfs -mkdir /apps
     sudo -u hdfs /opt/hadoop/bin/hdfs dfs -mkdir /apps/spark
     sudo -u hdfs /opt/hadoop/bin/hdfs dfs -mkdir /user
+    sudo -u hdfs /opt/hadoop/bin/hdfs dfs -chown -R hdfs:hadoop /
     sudo -u hdfs /opt/hadoop/bin/hdfs dfs -chmod 755 /user
-
-    # mkdir -p /hadoop/hdfs/namenode
-    # mkdir -p /hadoop/hdfs/data
-    # mkdir -p /hadoop/hdfs/namesecondary
 fi
 
 sleep infinity
